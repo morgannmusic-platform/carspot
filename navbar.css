@@ -14,11 +14,11 @@
   justify-content: center;
 }
  :root {
-  --primary: #007aff;
+  --primary: #007bff;
   --bg: #f2f2f7;
   --card-bg: rgba(206, 206, 206, 0.391);
   --text: #1c1c1e;
-  --gray: #8e8e93;
+  --gray: #272727;
   --radius: 18px;
   --nav-shadow: 0 4px 24px rgba(0,0,0,0.10);
 }
@@ -42,8 +42,8 @@ body {
   width: 96vw;
   max-width: 480px;
   background: var(--card-bg);
-  backdrop-filter: blur(11px);
-  -webkit-backdrop-filter: blur(11px);
+  backdrop-filter: blur(51px);
+  -webkit-backdrop-filter: blur(51px);
   border-radius: 32px;
   box-shadow: var(--nav-shadow);
   margin-bottom: 14px;
