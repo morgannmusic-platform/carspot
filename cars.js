@@ -92,30 +92,30 @@ window.renderCarsPageImpl = function renderCarsPage() {
     let currentPhoto = photos.indexOf(miniature) !== -1 ? photos.indexOf(miniature) : 0;
 
     function renderPhotos() {
-        let html = '';
-        if (photos.length > 0) {
-            html += `<div style="position:relative; display:flex;align-items:center;justify-content:center;margin-bottom:10px;gap:8px;">
-                <button type="button" id="prev-photo" style="font-size:1.5em;background:none;border:none;cursor:pointer;">◀️</button>
-                <div style="position:relative; display:inline-block;">
-                    <img src="${photos[currentPhoto]}" style="width:180px;max-width:90vw;height:120px;object-fit:cover;border-radius:10px;box-shadow:0 2px 8px #0002;">
-                    <button type="button" id="zoom-photo" style="position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.5); color:white; border:none; border-radius:5px; cursor:pointer; padding:2px 5px; font-size:12px;">🔍</button>
+      let html = '';
+      if (photos.length > 0) {
+        html += `<div class="photo-carousel">
+                <button type="button" id="prev-photo" class="photo-nav-btn" aria-label="Photo précédente">◀</button>
+                <div class="photo-stage">
+                    <img class="photo-stage-image" src="${photos[currentPhoto]}" alt="Photo de voiture">
+                    <button type="button" id="zoom-photo" class="photo-zoom-btn" aria-label="Voir en grand"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
-                <button type="button" id="next-photo" style="font-size:1.5em;background:none;border:none;cursor:pointer;">▶️</button>
+                <button type="button" id="next-photo" class="photo-nav-btn" aria-label="Photo suivante">▶</button>
             </div>`;
-            html += `<div style="text-align:center;margin-bottom:8px;">${photos.map((p,i)=>`<span style='cursor:pointer;font-size:1.2em;${i===currentPhoto?'color:#007aff;':''}' data-idx='${i}'>●</span>`).join(' ')}</div>`;
-            html += `<div style="text-align:center;margin-bottom:8px;"><button type="button" id="set-miniature" style="font-size:0.95em;${miniature===photos[currentPhoto]?'background:#007aff;color:#fff;':'background:#eee;'};border:none;padding:4px 10px;border-radius:8px;cursor:pointer;">Choisir comme miniature</button></div>`;
-        } else {
-            html = '<div style="text-align:center;color:#888;">Aucune photo</div>';
-        }
-        return html;
+        html += `<div class="photo-dots">${photos.map((p, i) => `<span class="photo-dot ${i === currentPhoto ? 'active' : ''}" data-idx="${i}" aria-label="Photo ${i + 1}"></span>`).join(' ')}</div>`;
+        html += `<button type="button" id="set-miniature" class="miniature-btn ${miniature === photos[currentPhoto] ? 'is-active' : ''}">${miniature === photos[currentPhoto] ? 'Miniature sélectionnée' : 'Choisir comme miniature'}</button>`;
+      } else {
+        html = '<div style="text-align:center;color:#888;">Aucune photo</div>';
+      }
+      return html;
     }
 
     modal.innerHTML = `
-        <div class="modal-content" style="position:relative; padding:24px; border-radius:16px; max-width:350px; width:90vw; background:white; box-shadow:0 8px 32px rgba(0,0,0,0.2);">
-            <button id="close-modal" style="position: absolute; top: 15px; right: 15px; font-size: 2.2em; background: none; border: none; cursor: pointer; line-height: 1; z-index: 10;">✖️</button>
-            <h3 style="margin-top:0;">Modifier la voiture</h3>
+        <div class="modal-content">
+            <button id="close-modal" class="modal-close" aria-label="Fermer">✕</button>
+            <h3 class="modal-title">Modifier la voiture</h3>
             <div id="photos-carousel">${renderPhotos()}</div>
-            <form id="edit-car-form">
+            <form id="edit-car-form" class="modal-form">
                 <label>Modèle</label>
                 <input type="text" id="edit-model" value="${car.model || ''}" required>
                 <label>Description</label>
@@ -124,7 +124,7 @@ window.renderCarsPageImpl = function renderCarsPage() {
                 <input type="file" id="edit-photo" accept="image/*" multiple>
                 <button type="submit">Enregistrer</button>
             </form>
-            <div id="edit-car-msg"></div>
+            <div id="edit-car-msg" class="modal-message"></div>
         </div>
     `;
 
@@ -135,84 +135,84 @@ window.renderCarsPageImpl = function renderCarsPage() {
     modal.onclick = e => { if (e.target === modal) modal.remove(); };
 
     modal.addEventListener('click', e => {
-        if (e.target.id === 'prev-photo') {
-            currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
-            modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
-        }
-        if (e.target.id === 'next-photo') {
-            currentPhoto = (currentPhoto + 1) % photos.length;
-            modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
-        }
-        if (e.target.id === 'set-miniature') {
-            miniature = photos[currentPhoto];
-            modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
-        }
-        if (e.target.dataset.idx) {
-            currentPhoto = parseInt(e.target.dataset.idx);
-            modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
-        }
-        if (e.target.id === 'zoom-photo') {
-            const fullScreenModal = document.createElement('div');
-            fullScreenModal.style = 'position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.95); z-index:9999; display:flex; align-items:center; justify-content:center; cursor:zoom-in;';
-            fullScreenModal.innerHTML = `
-                <button id="close-zoom" style="position:absolute; top:20px; right:20px; color:white; background:none; border:none; font-size:2em; cursor:pointer; z-index:100;">✖️</button>
-                <img id="zoom-img" src="${photos[currentPhoto]}" style="max-width:100vw; max-height:100vh; transition: transform 0.3s ease; object-fit:contain;">
+      if (e.target.id === 'prev-photo') {
+        currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
+        modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
+      }
+      if (e.target.id === 'next-photo') {
+        currentPhoto = (currentPhoto + 1) % photos.length;
+        modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
+      }
+      if (e.target.id === 'set-miniature') {
+        miniature = photos[currentPhoto];
+        modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
+      }
+      if (e.target.dataset.idx) {
+        currentPhoto = parseInt(e.target.dataset.idx);
+        modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
+      }
+      if (e.target.id === 'zoom-photo' || e.target.closest('#zoom-photo')) {
+        const fullScreenModal = document.createElement('div');
+        fullScreenModal.className = 'photo-zoom-modal';
+        fullScreenModal.innerHTML = `
+                <button id="close-zoom" class="photo-zoom-close" aria-label="Fermer la vue photo">✕</button>
+                <img id="zoom-img" class="photo-zoom-image" src="${photos[currentPhoto]}" alt="Photo zoomée">
             `;
-            document.body.appendChild(fullScreenModal);
-            const img = fullScreenModal.querySelector('#zoom-img');
-            let zoomLevel = 1;
-            img.onclick = (e) => {
-                e.stopPropagation();
-                zoomLevel = zoomLevel >= 3 ? 1 : zoomLevel + 1;
-                img.style.transform = `scale(${zoomLevel})`;
-                img.style.cursor = zoomLevel === 3 ? 'zoom-out' : 'zoom-in';
-            };
-            fullScreenModal.querySelector('#close-zoom').onclick = () => fullScreenModal.remove();
-            fullScreenModal.onclick = (evt) => { if (evt.target === fullScreenModal) fullScreenModal.remove(); };
-        }
+        document.body.appendChild(fullScreenModal);
+        const img = fullScreenModal.querySelector('#zoom-img');
+        let zoomLevel = 1;
+        img.onclick = (e) => {
+          e.stopPropagation();
+          zoomLevel = zoomLevel >= 3 ? 1 : zoomLevel + 1;
+          img.style.transform = `scale(${zoomLevel})`;
+          img.style.cursor = zoomLevel === 3 ? 'zoom-out' : 'zoom-in';
+        };
+        fullScreenModal.querySelector('#close-zoom').onclick = () => fullScreenModal.remove();
+        fullScreenModal.onclick = (evt) => { if (evt.target === fullScreenModal) fullScreenModal.remove(); };
+      }
     });
 
-    modal.querySelector('#edit-car-form').onsubmit = async function(e) {
-        e.preventDefault();
-        const msg = modal.querySelector('#edit-car-msg');
-        msg.innerText = 'Enregistrement...';
-        let updates = {
-            model: modal.querySelector('#edit-model').value,
-            desc: modal.querySelector('#edit-desc').value,
-            miniature
-        };
-        const files = modal.querySelector('#edit-photo').files;
-        if (files && files.length > 0) {
-            try {
-                for (let i = 0; i < files.length; i++) {
-                    const ref = storage.ref(`spots/${auth.currentUser.uid}/${Date.now()}_${files[i].name}`);
-                    await ref.put(files[i]);
-                    const url = await ref.getDownloadURL();
-                    photos.push(url);
-                }
-                updates.photos = photos;
-            } catch (err) {
-                msg.innerText = 'Erreur upload photo : ' + err.message;
-                return;
-            }
-        } else {
-            updates.photos = photos;
+    modal.querySelector('#edit-car-form').onsubmit = async function (e) {
+      e.preventDefault();
+      const msg = modal.querySelector('#edit-car-msg');
+      msg.innerText = 'Enregistrement...';
+      let updates = {
+        model: modal.querySelector('#edit-model').value,
+        desc: modal.querySelector('#edit-desc').value,
+        miniature
+      };
+      const files = modal.querySelector('#edit-photo').files;
+      if (files && files.length > 0) {
+        try {
+          for (let i = 0; i < files.length; i++) {
+            const ref = storage.ref(`spots/${auth.currentUser.uid}/${Date.now()}_${files[i].name}`);
+            await ref.put(files[i]);
+            const url = await ref.getDownloadURL();
+            photos.push(url);
+          }
+          updates.photos = photos;
+        } catch (err) {
+          msg.innerText = 'Erreur upload photo : ' + err.message;
+          return;
         }
-        db.collection('cars').doc(carId).update(updates).then(() => {
-            msg.innerText = 'Modifié !';
-            setTimeout(() => modal.remove(), 1000);
-        }).catch(err => { msg.innerText = err.message; });
+      } else {
+        updates.photos = photos;
+      }
+      db.collection('cars').doc(carId).update(updates).then(() => {
+        msg.innerText = 'Modifié !';
+        setTimeout(() => modal.remove(), 1000);
+      }).catch(err => { msg.innerText = err.message; });
     };
   }
 
   function applyFilters() {
     const search = document.getElementById('search-car').value.toLowerCase();
     const sort = document.getElementById('sort-car').value;
-    filteredCars = allCars.filter(({car}) => (car.model||'').toLowerCase().includes(search));
-    if (sort === 'date-desc') filteredCars.sort((a,b) => (b.car.createdAt?.seconds||0)-(a.car.createdAt?.seconds||0));
-    if (sort === 'date-asc') filteredCars.sort((a,b) => (a.car.createdAt?.seconds||0)-(b.car.createdAt?.seconds||0));
-    if (sort === 'alpha-asc') filteredCars.sort((a,b) => (a.car.model||'').localeCompare(b.car.model||''));
-    if (sort === 'alpha-desc') filteredCars.sort((a,b) => (b.car.model||'').localeCompare(a.car.model||''));
+    filteredCars = allCars.filter(({ car }) => (car.model || '').toLowerCase().includes(search));
+    if (sort === 'date-desc') filteredCars.sort((a, b) => (b.car.createdAt?.seconds || 0) - (a.car.createdAt?.seconds || 0));
+    if (sort === 'date-asc') filteredCars.sort((a, b) => (a.car.createdAt?.seconds || 0) - (b.car.createdAt?.seconds || 0));
+    if (sort === 'alpha-asc') filteredCars.sort((a, b) => (a.car.model || '').localeCompare(b.car.model || ''));
+    if (sort === 'alpha-desc') filteredCars.sort((a, b) => (b.car.model || '').localeCompare(a.car.model || ''));
     renderGrid();
   }
 

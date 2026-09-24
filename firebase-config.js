@@ -1,60 +1,34 @@
-// Applique la couleur du theme-color sur toutes les pages (Safari MacOS uniquement)
-window.applyThemeColor = async function(color) {
-  // Détection Safari MacOS
-  const ua = navigator.userAgent;
-  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-  const isSafari = /^((?!chrome|android|crios|fxios|edgios|opr|samsungbrowser).)*safari/i.test(ua);
-  if (isMac && isSafari) {
-    let meta = document.querySelector('meta[name="theme-color"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'theme-color';
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute('content', color);
-  }
+const DEFAULT_PREFERENCES = {
+  themeColor: '#007aff',
+  backgroundColor: '#f2f2f7',
+  gradientStart: '#007aff',
+  gradientEnd: '#5ac8fa',
+  animateGradient: false,
+  backgroundImage: '',
+  textColor: '#1c1c1e',
+  titleColor: '#1c1c1e',
+  buttonColor: '#007aff',
+  buttonTextColor: '#ffffff'
 };
 
-// Applique la couleur stockée au chargement de chaque page
-window.applyStoredThemeColor = async function() {
-  let color = localStorage.getItem('cs-theme-color') || '#007aff';
-  if (window.auth && window.auth.currentUser) {
-    try {
-      const userDoc = await window.db.collection('users').doc(window.auth.currentUser.uid).get();
-      if (userDoc.exists && userDoc.data().themeColor) {
-        color = userDoc.data().themeColor;
-        localStorage.setItem('cs-theme-color', color);
-      }
-    } catch (e) { /* ignore erreur réseau */ }
-  }
-  window.applyThemeColor(color);
-};
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBR_uHqxZhdIIHzhWyFNQaAQZ8uHyXf20c",
-  authDomain: "carspot-d6ff9.firebaseapp.com",
-  projectId: "carspot-d6ff9",
-  storageBucket: "carspot-d6ff9.firebasestorage.app",  messagingSenderId: "1020332551922",
-  appId: "1:1020332551922:web:7ab8a7bbd808f674d52a6b",
-  measurementId: "G-YCVWCRSW91"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-
-window.db = firebase.firestore();
-window.storage = firebase.storage();
-window.auth = firebase.auth();
-
-
-
-// Appliquer le fond d'écran ou le dégradé sur toutes les pages (avec animation si demandé)
+const PREFERENCES_STORAGE_KEY = 'carspot-user-settings';
 let gradientAnimationInterval = null;
-function setGradientBg(c1, c2, animate=false) {
+
+function getStoredPreferences() {
+  try {
+    const saved = localStorage.getItem(PREFERENCES_STORAGE_KEY);
+    return saved ? { ...DEFAULT_PREFERENCES, ...JSON.parse(saved) } : { ...DEFAULT_PREFERENCES };
+  } catch (error) {
+    return { ...DEFAULT_PREFERENCES };
+  }
+}
+
+function setGradientBg(c1, c2, animate = false) {
   if (gradientAnimationInterval) {
     clearInterval(gradientAnimationInterval);
     gradientAnimationInterval = null;
   }
+
   if (animate && c2 && c2 !== '') {
     let angle = 0;
     gradientAnimationInterval = setInterval(() => {
@@ -68,43 +42,150 @@ function setGradientBg(c1, c2, animate=false) {
   }
 }
 
-window.applyStoredBg = async function() {
-  // S'assure que le DOM est prêt
-  if (!document.body) {
-    window.addEventListener('DOMContentLoaded', window.applyStoredBg);
-    return;
+window.applyThemeColor = async function (color) {
+  const ua = navigator.userAgent;
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const isSafari = /^((?!chrome|android|crios|fxios|edgios|opr|samsungbrowser).)*safari/i.test(ua);
+  if (isMac && isSafari) {
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', color || '#007aff');
   }
-  // Applique la couleur de theme-color stockée
-  if (window.applyStoredThemeColor) window.applyStoredThemeColor();
-  let grad = localStorage.getItem('cs-gradient');
-  let bg = localStorage.getItem('cs-bg');
-  const animate = localStorage.getItem('cs-animate-gradient') === 'true';
-  // Si connecté, tente de charger le fond Firestore
-  if (window.auth && window.auth.currentUser) {
-    try {
-      const userDoc = await window.db.collection('users').doc(window.auth.currentUser.uid).get();
-      if (userDoc.exists && userDoc.data().bg) {
-        bg = userDoc.data().bg;
-        localStorage.setItem('cs-bg', bg); // Sync local pour usage offline
-      }
-    } catch (e) { /* ignore erreur réseau */ }
-  }
-  if (grad) {
-    const [c1, c2] = grad.split(',');
-    setGradientBg(c1, c2, animate);
-  } else if (bg) {
-    if (bg.startsWith('#')) document.body.style.backgroundColor = bg;
-    else document.body.style.backgroundImage = `url(${bg})`;
-  }
-  // Couleurs texte/titres/boutons
-  const textColor = localStorage.getItem('cs-text-color');
-  const titleColor = localStorage.getItem('cs-title-color');
-  const btnColor = localStorage.getItem('cs-btn-color');
-  const btnTextColor = localStorage.getItem('cs-btn-text-color');
-  if (textColor) document.body.style.color = textColor;
-  if (titleColor) document.querySelectorAll('h1,h2,h3').forEach(t => t.style.color = titleColor);
-  if (btnColor) document.querySelectorAll('button').forEach(b => b.style.background = btnColor);
-  if (btnTextColor) document.querySelectorAll('button').forEach(b => b.style.color = btnTextColor);
 };
 
-window.applyStoredBg();
+window.CarSpotPreferences = {
+  defaults: { ...DEFAULT_PREFERENCES },
+
+  getCurrent() {
+    return getStoredPreferences();
+  },
+
+  apply(settings = getStoredPreferences()) {
+    const prefs = { ...DEFAULT_PREFERENCES, ...settings };
+    const root = document.documentElement;
+
+    root.style.setProperty('--primary', prefs.themeColor || '#007aff');
+    root.style.setProperty('--bg', prefs.backgroundColor || '#f2f2f7');
+    root.style.setProperty('--text', prefs.textColor || '#1c1c1e');
+    root.style.setProperty('--card-bg', 'rgba(255,255,255,0.32)');
+    root.style.setProperty('--title-color', prefs.titleColor || prefs.textColor || '#1c1c1e');
+
+    document.body.style.color = prefs.textColor || '#1c1c1e';
+    document.body.style.backgroundAttachment = 'fixed';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+
+    if (prefs.gradientStart || prefs.gradientEnd) {
+      setGradientBg(prefs.gradientStart || '#007aff', prefs.gradientEnd || '', !!prefs.animateGradient);
+    } else if (prefs.backgroundImage) {
+      document.body.style.background = `url(${prefs.backgroundImage}) center/cover no-repeat fixed`;
+    } else {
+      document.body.style.background = prefs.backgroundColor || '#f2f2f7';
+    }
+
+    document.querySelectorAll('h1,h2,h3').forEach((element) => {
+      element.style.color = prefs.titleColor || prefs.textColor || '#1c1c1e';
+    });
+
+    document.querySelectorAll('button').forEach((button) => {
+      button.style.background = prefs.buttonColor || prefs.themeColor || '#007aff';
+      button.style.color = prefs.buttonTextColor || '#ffffff';
+    });
+
+    localStorage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(prefs));
+    window.applyThemeColor(prefs.themeColor || '#007aff');
+    return prefs;
+  },
+
+  async save(settings) {
+    const merged = { ...this.getCurrent(), ...settings };
+    localStorage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(merged));
+
+    if (window.auth && window.auth.currentUser && window.db) {
+      const userRef = window.db.collection('users').doc(window.auth.currentUser.uid);
+      await userRef.set({ preferences: merged }, { merge: true });
+    }
+
+    this.apply(merged);
+    return merged;
+  },
+
+  async refresh() {
+    let preferences = this.getCurrent();
+
+    if (window.auth && window.auth.currentUser && window.db) {
+      try {
+        const userDoc = await window.db.collection('users').doc(window.auth.currentUser.uid).get();
+        if (userDoc.exists && userDoc.data().preferences) {
+          preferences = { ...DEFAULT_PREFERENCES, ...preferences, ...userDoc.data().preferences };
+          localStorage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(preferences));
+        }
+      } catch (error) {
+        // Ignore sync errors and keep local fallback
+      }
+    }
+
+    this.apply(preferences);
+    return preferences;
+  },
+
+  async reset() {
+    localStorage.removeItem(PREFERENCES_STORAGE_KEY);
+
+    if (window.auth && window.auth.currentUser && window.db) {
+      const userRef = window.db.collection('users').doc(window.auth.currentUser.uid);
+      await userRef.set({ preferences: DEFAULT_PREFERENCES }, { merge: true });
+    }
+
+    this.apply({ ...DEFAULT_PREFERENCES });
+    return { ...DEFAULT_PREFERENCES };
+  }
+};
+
+window.applyStoredBg = function () {
+  window.CarSpotPreferences.apply();
+};
+
+window.applyStoredThemeColor = async function (color) {
+  const prefs = window.CarSpotPreferences.getCurrent();
+  const themeColor = color || prefs.themeColor || '#007aff';
+  if (window.CarSpotPreferences && window.CarSpotPreferences.apply) {
+    window.CarSpotPreferences.apply({ ...prefs, themeColor });
+  }
+  window.applyThemeColor(themeColor);
+};
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBR_uHqxZhdIIHzhWyFNQaAQZ8uHyXf20c",
+  authDomain: "carspot-d6ff9.firebaseapp.com",
+  projectId: "carspot-d6ff9",
+  storageBucket: "carspot-d6ff9.firebasestorage.app",
+  messagingSenderId: "1020332551922",
+  appId: "1:1020332551922:web:7ab8a7bbd808f674d52a6b",
+  measurementId: "G-YCVWCRSW91"
+};
+
+firebase.initializeApp(firebaseConfig);
+window.db = firebase.firestore();
+window.storage = firebase.storage();
+window.auth = firebase.auth();
+
+window.addEventListener('DOMContentLoaded', function () {
+  if (window.auth) {
+    window.auth.onAuthStateChanged(async function (user) {
+      if (user) {
+        await window.CarSpotPreferences.refresh();
+      } else {
+        window.CarSpotPreferences.apply(window.CarSpotPreferences.getCurrent());
+      }
+    });
+  } else {
+    window.CarSpotPreferences.apply(window.CarSpotPreferences.getCurrent());
+  }
+});
+
+window.CarSpotPreferences.apply(window.CarSpotPreferences.getCurrent());

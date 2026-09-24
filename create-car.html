@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          if (window.auth) {
-            window.auth.onAuthStateChanged(function(user) {
-              if (!user) window.location.replace('login.html?redirect=' + encodeURIComponent(window.location.pathname));
-            });
-          }
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.auth) {
+        window.auth.onAuthStateChanged(function (user) {
+          if (!user) window.location.replace('login.html?redirect=' + encodeURIComponent(window.location.pathname));
         });
-      </script>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="CarSpot">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+      }
+    });
+  </script>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CarSpot">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nouveau Spot - CarSpot</title>
   <!-- Favicons & App Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-  <link rel="manifest" href="/favicon/site.webmanifest">
-  <link rel="shortcut icon" href="favicon/favicon.ico">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="180x180" href="public/logo192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="public/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="public/favicon.ico">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="shortcut icon" href="public/favicon.ico">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="CarSpot">
   <meta name="theme-color" content="#007aff">
   <meta name="msapplication-TileColor" content="#007aff">
-  <meta name="msapplication-TileImage" content="favicon/android-chrome-192x192.png">
+  <meta name="msapplication-TileImage" content="public/logo192.png">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="navbar.css">
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -37,6 +39,7 @@
   <script src="firebase-config.js" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
   <main id="app-content">
     <h2>Nouveau Spot</h2>
@@ -44,7 +47,9 @@
       <input type="file" id="c-file" accept="image/*" required>
       <input type="text" id="c-model" placeholder="Modèle" required>
       <textarea id="c-desc" placeholder="Description"></textarea>
-      <select id="c-list" required><option value="">Chargement...</option></select>
+      <select id="c-list" required>
+        <option value="">Chargement...</option>
+      </select>
       <button type="submit" id="btn-up">Publier</button>
       <div id="car-loader" style="display:none;text-align:center;margin-top:10px;">
         <div class="loader"></div>
@@ -53,34 +58,40 @@
     </form>
   </main>
 
-   <nav class="navbar">
+  <nav class="navbar">
     <style>
-    .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #007aff;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+      .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #007aff;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
     </style>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.getElementById('add-car-form');
-      if (!form) return;
-      form.addEventListener('submit', function() {
-        const loader = document.getElementById('car-loader');
-        if (loader) loader.style.display = 'block';
-        const btn = document.getElementById('btn-up');
-        if (btn) btn.disabled = true;
+      document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('add-car-form');
+        if (!form) return;
+        form.addEventListener('submit', function () {
+          const loader = document.getElementById('car-loader');
+          if (loader) loader.style.display = 'block';
+          const btn = document.getElementById('btn-up');
+          if (btn) btn.disabled = true;
+        });
       });
-    });
     </script>
     <ul>
       <li>
@@ -119,7 +130,7 @@
   <script>
     window.onload = () => {
       auth.onAuthStateChanged(user => {
-        if(!user) return;
+        if (!user) return;
         db.collection('lists').where('uid', '==', user.uid).get().then(snap => {
           const sel = document.getElementById('c-list');
           sel.innerHTML = '<option value="">Choisir une liste</option>';
@@ -159,4 +170,5 @@
     };
   </script>
 </body>
+
 </html>

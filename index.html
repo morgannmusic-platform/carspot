@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>CarSpot Collection X</title>
   <!-- Favicons & App Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-  <link rel="manifest" href="/favicon/site.webmanifest">
-  <link rel="shortcut icon" href="favicon/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="public/logo192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="public/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="public/favicon.ico">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="shortcut icon" href="public/favicon.ico">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="CarSpot">
   <meta name="theme-color" content="#007aff">
@@ -20,75 +22,79 @@
   <!-- Font Awesome pour les icônes -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="firebase-config.js"></script>
-  
+
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  </main>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</main>
+
 <body>
-<style>
-  h1 {
-    margin-top: 50px;
-    font-size: 1.8rem;
-    color: var(--text);
-    text-align: center;
-  } 
+  <style>
+    h1 {
+      margin-top: 50px;
+      font-size: 1.8rem;
+      color: var(--text);
+      text-align: center;
+    }
 
-  .logo {
-    font-size: 2.4rem;
-    color: var(--primary);
-    margin-bottom: 8px;
-    
-  }
+    .logo {
+      font-size: 2.4rem;
+      color: var(--primary);
+      margin-bottom: 8px;
 
-  .logo img {
-    width: 500px;
-    height: 500px;
-    margin-right: 8px;
-  }
-      .logo-center {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 70vh;
-        margin-top: 30px;
-      }
-      .logo-center img {
-        width: 320px;
-        height: 320px;
-        margin-bottom: 32px;
-        opacity: 0.96;
-        filter: drop-shadow(0 8px 40px rgba(0,0,0,0.13));
-        display: block;
-        max-width: 90vw;
-        max-height: 50vh;
-      }
-      .logo-center h1 {
-        font-size: 2.2rem;
-        color: var(--primary);
-        text-align: center;
-        margin: 0;
-        font-weight: 700;
-        letter-spacing: 1px;
-      }
+    }
 
-      .btnlogin {
-        margin: 20px 25px 0 25px;
-        background-color: #007AFF;
-        padding: 15px;
-        border-radius: 50px;
-        text-decoration: none;
-        color: white;
-      }
-</style>
+    .logo img {
+      width: 500px;
+      height: 500px;
+      margin-right: 8px;
+    }
+
+    .logo-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      margin-top: 30px;
+    }
+
+    .logo-center img {
+      width: 320px;
+      height: 320px;
+      margin-bottom: 32px;
+      opacity: 0.96;
+      filter: drop-shadow(0 8px 40px rgba(0, 0, 0, 0.13));
+      display: block;
+      max-width: 90vw;
+      max-height: 50vh;
+    }
+
+    .logo-center h1 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      text-align: center;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .btnlogin {
+      margin: 20px 25px 0 25px;
+      background-color: #007AFF;
+      padding: 15px;
+      border-radius: 50px;
+      text-decoration: none;
+      color: white;
+    }
+  </style>
   <nav class="navbar">
     <ul>
       <li>
@@ -140,25 +146,25 @@
       measurementId: "G-YCVWCRSW91",
     };
     firebase.initializeApp(firebaseConfig);
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('id')) {
-          showPage('car-detail');
-        } else {
-          showPage('cars');
-        }
-      
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('id')) {
+      showPage('car-detail');
+    } else {
+      showPage('cars');
+    }
+
 
     // Système de navigation SPA (Single Page Application)
     async function showPage(page) {
       const container = document.getElementById('app-content');
       container.innerHTML = '<div class="loader">Chargement...</div>';
-      
+
       // Mise à jour de l'UI des boutons
       document.querySelectorAll('.navbar button').forEach(b => b.classList.remove('selected'));
       const activeBtn = document.getElementById('nav-' + page);
       if (activeBtn) activeBtn.classList.add('selected');
 
-      switch(page) {
+      switch (page) {
         case 'lists': renderListsPage(); break;
         case 'cars': renderCarsPage(); break;
         case 'add': renderAddCarPage(); break;
@@ -184,7 +190,7 @@
 
       db.collection('lists').where('uid', '==', user.uid).onSnapshot(snap => {
         const div = document.getElementById('lists-container');
-        if(!div) return;
+        if (!div) return;
         div.innerHTML = '';
         snap.forEach(doc => {
           const data = doc.data();
@@ -210,10 +216,10 @@
     function renderCarsPage() {
       const user = auth.currentUser;
       document.getElementById('app-content').innerHTML = `<h2>Mes spots</h2><div id="cars-grid" class="grid"></div>`;
-      
+
       db.collection('cars').where('uid', '==', user.uid).orderBy('createdAt', 'desc').onSnapshot(snap => {
         const grid = document.getElementById('cars-grid');
-        if(!grid) return;
+        if (!grid) return;
         grid.innerHTML = '';
         snap.forEach(doc => {
           const car = doc.data();
@@ -319,7 +325,7 @@
     function renderCarDetailPage() {
       const id = new URLSearchParams(window.location.search).get('id');
       db.collection('cars').doc(id).get().then(doc => {
-        if(!doc.exists) return showPage('cars');
+        if (!doc.exists) return showPage('cars');
         const car = doc.data();
         document.getElementById('app-content').innerHTML = `
           <button onclick="history.back()" style="width:auto; margin-bottom:15px;">← Retour</button>
@@ -333,7 +339,7 @@
     }
 
     window.deleteCar = (id) => {
-      if(confirm("Supprimer ce spot définitivement ?")) {
+      if (confirm("Supprimer ce spot définitivement ?")) {
         db.collection('cars').doc(id).delete().then(() => window.location.href = 'index.html');
       }
     };
@@ -342,4 +348,5 @@
 
   </script>
 </body>
+
 </html>

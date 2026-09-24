@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-        <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            if (window.auth) {
-              window.auth.onAuthStateChanged(function(user) {
-                if (!user) window.location.replace('login.html?redirect=' + encodeURIComponent(window.location.pathname));
-              });
-            }
-          });
-        </script>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="CarSpot">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.auth) {
+        window.auth.onAuthStateChanged(function (user) {
+          if (!user) window.location.replace('login.html?redirect=' + encodeURIComponent(window.location.pathname));
+        });
+      }
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CarSpot">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compte - CarSpot</title>
   <!-- Favicons & App Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-  <link rel="manifest" href="/favicon/site.webmanifest">
-  <link rel="shortcut icon" href="favicon/favicon.ico">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="180x180" href="public/logo192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="public/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="public/favicon.ico">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="shortcut icon" href="public/favicon.ico">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="CarSpot">
   <meta name="theme-color" content="#007aff">
   <meta name="msapplication-TileColor" content="#007aff">
@@ -36,6 +38,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
   <script src="firebase-config.js" defer></script>
 </head>
+
 <body>
   <main id="app-content">
     <h2>Mon Compte</h2>
@@ -48,7 +51,7 @@
     </div>
   </main>
 
-    <nav class="navbar">
+  <nav class="navbar">
     <ul>
       <li>
         <a href="liste.html">
@@ -86,7 +89,7 @@
   <script>
     window.onload = () => {
       auth.onAuthStateChanged(user => {
-        if(user) {
+        if (user) {
           document.getElementById('user-email').innerText = "Email : " + user.email;
           document.getElementById('user-displayname').value = user.displayName || "";
         }
@@ -102,4 +105,5 @@
     }
   </script>
 </body>
+
 </html>

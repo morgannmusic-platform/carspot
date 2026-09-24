@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-            <script>
-            // Applique la couleur theme-color dès le chargement, même sans connexion
-            document.addEventListener('DOMContentLoaded', function() {
-              let color = localStorage.getItem('cs-theme-color') || '#007aff';
-              if (window.applyThemeColor) window.applyThemeColor(color);
-            });
-            </script>
-            <!-- Script theme-color retiré, tout passe par applyThemeColor -->
-        <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            if (window.auth) {
-              window.auth.onAuthStateChanged(function(user) {
-                if (!user) window.location.replace('login.html?redirect=' + encodeURIComponent(window.location.pathname));
-              });
-            }
-          });
-        </script>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="CarSpot">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <script>
+    // Applique la couleur theme-color dès le chargement, même sans connexion
+    document.addEventListener('DOMContentLoaded', function () {
+      let color = localStorage.getItem('cs-theme-color') || '#007aff';
+      if (window.applyThemeColor) window.applyThemeColor(color);
+    });
+  </script>
+  <!-- Script theme-color retiré, tout passe par applyThemeColor -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.auth) {
+        window.auth.onAuthStateChanged(function (user) {
+          if (!user) window.location.replace('login.html?redirect=' + encodeURIComponent(window.location.pathname));
+        });
+      }
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CarSpot">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Réglages - CarSpot</title>
   <!-- Favicons & App Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-  <link rel="manifest" href="/favicon/site.webmanifest">
-  <link rel="shortcut icon" href="favicon/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="public/logo192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="public/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="public/favicon.ico">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <link rel="shortcut icon" href="public/favicon.ico">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="CarSpot">
   <meta name="theme-color" content="#007aff">
@@ -43,6 +45,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
   <script src="firebase-config.js" defer></script>
 </head>
+
 <body>
   <main id="app-content">
     <h2>Réglages</h2>
@@ -58,16 +61,17 @@
       <label>Image de fond :</label>
       <input type="file" id="bg-file" accept="image/*"><br>
       <button onclick="uploadBgImage()">Uploader et appliquer</button>
-      <button onclick="removeBgImage()" style="background:#ff4444;color:#fff;margin-left:8px;">Supprimer l'image</button>
-          
-      <hr>
-          <label>Couleur de la barre du navigateur (Safari MacOS) :</label>
-    <input type="color" id="theme-color-picker" style="vertical-align:middle;" />
-    <button id="apply-theme-color" style="margin-left:8px;">Appliquer</button>
-    <button id="reset-theme-color" style="margin-left:8px;">Réinitialiser</button>
-    <br><br>
+      <button onclick="removeBgImage()" style="background:#ff4444;color:#fff;margin-left:8px;">Supprimer
+        l'image</button>
 
-<hr>
+      <hr>
+      <label>Couleur de la barre du navigateur (Safari MacOS) :</label>
+      <input type="color" id="theme-color-picker" style="vertical-align:middle;" />
+      <button id="apply-theme-color" style="margin-left:8px;">Appliquer</button>
+      <button id="reset-theme-color" style="margin-left:8px;">Réinitialiser</button>
+      <br><br>
+
+      <hr>
       <label>Couleur du texte :</label>
       <input type="color" id="text-color" value="#1c1c1e"><br><br>
       <label>Couleur des titres :</label>
@@ -80,7 +84,7 @@
     </div>
   </main>
 
-    <nav class="navbar">
+  <nav class="navbar">
     <ul>
       <li>
         <a href="liste.html">
@@ -116,155 +120,96 @@
 
 
   <script>
-    // Appliquer le dégradé sur la page Setting
-    let gradientAnimationInterval = null;
-    function setGradientBg(c1, c2, animate=false) {
-      if (gradientAnimationInterval) {
-        clearInterval(gradientAnimationInterval);
-        gradientAnimationInterval = null;
-      }
-      if (animate && c2 && c2 !== '') {
-        let angle = 0;
-        gradientAnimationInterval = setInterval(() => {
-          angle = (angle + 1) % 360;
-          document.body.style.background = `linear-gradient(${angle}deg, ${c1}, ${c2})`;
-        }, 50);
-      } else if (c2 && c2 !== '') {
-        document.body.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
-      } else {
-        document.body.style.background = c1;
-      }
+    function applyDefaultPreferencesToForm() {
+      const prefs = window.CarSpotPreferences ? window.CarSpotPreferences.getCurrent() : {};
+      document.getElementById('color1').value = prefs.gradientStart || '#007aff';
+      document.getElementById('color2').value = prefs.gradientEnd || '#5ac8fa';
+      document.getElementById('animate-gradient').checked = !!prefs.animateGradient;
+      document.getElementById('text-color').value = prefs.textColor || '#1c1c1e';
+      document.getElementById('title-color').value = prefs.titleColor || '#1c1c1e';
+      document.getElementById('btn-color').value = prefs.buttonColor || '#007aff';
+      document.getElementById('btn-text-color').value = prefs.buttonTextColor || '#ffffff';
+      document.getElementById('theme-color-picker').value = prefs.themeColor || '#007aff';
     }
-    // Appliquer le fond depuis le localStorage
-    function applyStoredBg() {
-      const grad = localStorage.getItem('cs-gradient');
-      const img = localStorage.getItem('cs-bg');
-      const animate = localStorage.getItem('cs-animate-gradient') === 'true';
-      if (grad) {
-        const [c1, c2] = grad.split(',');
-        setGradientBg(c1, c2, animate);
-        document.getElementById('color1').value = c1;
-        document.getElementById('color2').value = c2 || '';
-        document.getElementById('animate-gradient').checked = animate;
-      } else if (img) {
-        if (img.startsWith('#')) document.body.style.backgroundColor = img;
-        else document.body.style.backgroundImage = `url(${img})`;
-      }
-      // Appliquer couleurs texte/bouton/titres
-      const textColor = localStorage.getItem('cs-text-color');
-      const titleColor = localStorage.getItem('cs-title-color');
-      const btnColor = localStorage.getItem('cs-btn-color');
-      const btnTextColor = localStorage.getItem('cs-btn-text-color');
-      if (textColor) document.body.style.color = textColor;
-      if (titleColor) {
-        document.querySelectorAll('h1,h2,h3').forEach(t => t.style.color = titleColor);
-        document.getElementById('title-color').value = titleColor;
-      }
-      if (btnColor) {
-        document.querySelectorAll('button').forEach(b => b.style.background = btnColor);
-        document.getElementById('btn-color').value = btnColor;
-      }
-      if (btnTextColor) {
-        document.querySelectorAll('button').forEach(b => b.style.color = btnTextColor);
-        document.getElementById('btn-text-color').value = btnTextColor;
-      }
-      if (textColor) document.getElementById('text-color').value = textColor;
+
+    async function applyGradient() {
+      const prefs = window.CarSpotPreferences ? window.CarSpotPreferences.getCurrent() : {};
+      await window.CarSpotPreferences.save({
+        ...prefs,
+        gradientStart: document.getElementById('color1').value,
+        gradientEnd: document.getElementById('color2').value,
+        animateGradient: document.getElementById('animate-gradient').checked,
+        backgroundImage: '',
+        backgroundColor: document.getElementById('color1').value
+      });
     }
-    function applyGradient() {
-      const c1 = document.getElementById('color1').value;
-      const c2 = document.getElementById('color2').value;
-      const animate = document.getElementById('animate-gradient').checked;
-      if (window.auth && window.auth.currentUser && window.db) {
-        const userRef = window.db.collection('users').doc(window.auth.currentUser.uid);
-        userRef.set({ gradient: `${c1},${c2}`, animateGradient: !!animate }, { merge: true });
-      }
-      localStorage.setItem('cs-gradient', `${c1},${c2}`);
-      localStorage.setItem('cs-animate-gradient', animate);
-      localStorage.removeItem('cs-bg');
-      setGradientBg(c1, c2, animate);
+
+    async function applyColors() {
+      const prefs = window.CarSpotPreferences ? window.CarSpotPreferences.getCurrent() : {};
+      await window.CarSpotPreferences.save({
+        ...prefs,
+        textColor: document.getElementById('text-color').value,
+        titleColor: document.getElementById('title-color').value,
+        buttonColor: document.getElementById('btn-color').value,
+        buttonTextColor: document.getElementById('btn-text-color').value,
+        themeColor: document.getElementById('theme-color-picker').value
+      });
     }
-        function applyColors() {
-          const textColor = document.getElementById('text-color').value;
-          const titleColor = document.getElementById('title-color').value;
-          const btnColor = document.getElementById('btn-color').value;
-          const btnTextColor = document.getElementById('btn-text-color').value;
-          localStorage.setItem('cs-text-color', textColor);
-          localStorage.setItem('cs-title-color', titleColor);
-          localStorage.setItem('cs-btn-color', btnColor);
-          localStorage.setItem('cs-btn-text-color', btnTextColor);
-          document.body.style.color = textColor;
-          document.querySelectorAll('h1,h2,h3').forEach(t => t.style.color = titleColor);
-          document.querySelectorAll('button').forEach(b => {
-            b.style.background = btnColor;
-            b.style.color = btnTextColor;
-          });
-        }
-    function updateBg(val) {
-      localStorage.setItem('cs-bg', val);
-      localStorage.removeItem('cs-gradient');
-      location.reload();
-    }
+
     function resetBg() {
-      localStorage.removeItem('cs-bg');
-      localStorage.removeItem('cs-gradient');
-      location.reload();
+      if (window.CarSpotPreferences) {
+        window.CarSpotPreferences.reset();
+      }
     }
+
     function uploadBgImage() {
       const fileInput = document.getElementById('bg-file');
       const file = fileInput.files[0];
       if (!file) return alert('Sélectionne une image.');
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         const dataUrl = e.target.result;
-        localStorage.setItem('cs-bg', dataUrl);
-        localStorage.removeItem('cs-gradient');
-        location.reload();
+        if (window.CarSpotPreferences) {
+          window.CarSpotPreferences.save({
+            backgroundImage: dataUrl,
+            backgroundColor: '',
+            gradientStart: '',
+            gradientEnd: ''
+          });
+        }
       };
       reader.readAsDataURL(file);
     }
-    applyStoredBg();
 
     function removeBgImage() {
-            localStorage.removeItem('cs-bg');
-            location.reload();
-          }
-  </script>
-</body>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const picker = document.getElementById('theme-color-picker');
-  const applyBtn = document.getElementById('apply-theme-color');
-  const resetBtn = document.getElementById('reset-theme-color');
-  if (!picker || !applyBtn || !resetBtn) return;
-  // Applique la couleur stockée dès le chargement de la page Setting
-  if (window.applyStoredThemeColor) window.applyStoredThemeColor();
-  let stored = localStorage.getItem('cs-theme-color');
-  if (!stored && window.auth && window.auth.currentUser) {
-    window.db.collection('users').doc(window.auth.currentUser.uid).get().then(doc => {
-      if (doc.exists && doc.data().themeColor) {
-        stored = doc.data().themeColor;
-        picker.value = stored;
+      if (window.CarSpotPreferences) {
+        window.CarSpotPreferences.save({ backgroundImage: '', backgroundColor: '#f2f2f7', gradientStart: '', gradientEnd: '' });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      if (window.CarSpotPreferences) {
+        await window.CarSpotPreferences.refresh();
+      }
+      applyDefaultPreferencesToForm();
+
+      const picker = document.getElementById('theme-color-picker');
+      const applyBtn = document.getElementById('apply-theme-color');
+      const resetBtn = document.getElementById('reset-theme-color');
+
+      if (picker && applyBtn && resetBtn) {
+        applyBtn.addEventListener('click', async function () {
+          const prefs = window.CarSpotPreferences ? window.CarSpotPreferences.getCurrent() : {};
+          await window.CarSpotPreferences.save({ ...prefs, themeColor: picker.value });
+        });
+
+        resetBtn.addEventListener('click', async function () {
+          await window.CarSpotPreferences.reset();
+          applyDefaultPreferencesToForm();
+        });
       }
     });
-  } else if (stored) {
-    picker.value = stored;
-  }
-  applyBtn.addEventListener('click', async function() {
-    const color = picker.value;
-    localStorage.setItem('cs-theme-color', color);
-    if (window.auth && window.auth.currentUser) {
-      await window.db.collection('users').doc(window.auth.currentUser.uid).set({ themeColor: color }, { merge: true });
-    }
-    if (window.applyThemeColor) window.applyThemeColor(color);
-  });
-  resetBtn.addEventListener('click', async function() {
-    localStorage.removeItem('cs-theme-color');
-    if (window.auth && window.auth.currentUser) {
-      await window.db.collection('users').doc(window.auth.currentUser.uid).update({ themeColor: window.firebase.firestore.FieldValue.delete() });
-    }
-    if (window.applyThemeColor) window.applyThemeColor('#007aff');
-    picker.value = '#007aff';
-  });
-});
-</script>
+  </script>
+</body>
+
 </html>

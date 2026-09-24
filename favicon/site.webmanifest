@@ -1,0 +1,22 @@
+{
+    "name": "CarSpot",
+    "short_name": "CarSpot",
+    "description": "CarSpot Collection X",
+    "start_url": "../index.html",
+    "scope": "../",
+    "display": "standalone",
+    "background_color": "#f2f2f7",
+    "theme_color": "#007aff",
+    "icons": [
+        {
+            "src": "../public/logo192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "../public/logo512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

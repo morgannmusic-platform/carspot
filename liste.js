@@ -35,18 +35,18 @@ window.onload = () => { // This window.onload might conflict with DOMContentLoad
             }
           };
         });
-          // Modification d'une liste
-          document.querySelectorAll('.edit-list-btn').forEach(btn => {
-            btn.onclick = (e) => {
-              e.stopPropagation();
-              const id = btn.getAttribute('data-id');
-              const newName = prompt('Nouveau nom de la liste :');
-              const newDesc = prompt('Nouvelle description de la liste :');
-              if (newName && newName.trim() !== '') {
-                db.collection('lists').doc(id).update({ name: newName, desc: newDesc });
-              }
-            };
-          });
+        // Modification d'une liste
+        document.querySelectorAll('.edit-list-btn').forEach(btn => {
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            const id = btn.getAttribute('data-id');
+            const newName = prompt('Nouveau nom de la liste :');
+            const newDesc = prompt('Nouvelle description de la liste :');
+            if (newName && newName.trim() !== '') {
+              db.collection('lists').doc(id).update({ name: newName, desc: newDesc });
+            }
+          };
+        });
       });
       document.getElementById('add-list-form').onsubmit = (e) => {
         e.preventDefault();
@@ -91,35 +91,35 @@ function renderCarsOfList(listId, uid) {
         openCarPopup(doc.id, car);
       };
       // Suppression voiture
-        // Déplacement voiture
-        div.querySelector('.move-car-btn').onclick = (e) => {
-          e.stopPropagation();
-          // Récupère les listes de l'utilisateur
-          db.collection('lists').where('uid', '==', uid).get().then(snap => {
-            let options = '';
-            snap.forEach(listDoc => {
-              options += `<option value="${listDoc.id}" ${car.listId === listDoc.id ? 'selected' : ''}>${listDoc.data().name}</option>`;
-            });
-            const selectHtml = `<select id="move-list-select">${options}</select>`;
-            const modal = document.createElement('div');
-            modal.style = 'position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;z-index:2000;';
-            modal.innerHTML = `<div style='background:#fff;padding:24px;border-radius:12px;box-shadow:0 4px 24px #0002;'>Changer de liste :<br>${selectHtml}<br><button id='move-list-btn' style='margin-top:12px;background:#007aff;color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;'>Valider</button></div>`;
-            document.body.appendChild(modal);
-            modal.querySelector('#move-list-btn').onclick = () => {
-              const newListId = modal.querySelector('#move-list-select').value;
-              db.collection('cars').doc(doc.id).update({ listId: newListId });
-              modal.remove();
-            };
-            modal.onclick = (evt) => { if (evt.target === modal) modal.remove(); };
+      // Déplacement voiture
+      div.querySelector('.move-car-btn').onclick = (e) => {
+        e.stopPropagation();
+        // Récupère les listes de l'utilisateur
+        db.collection('lists').where('uid', '==', uid).get().then(snap => {
+          let options = '';
+          snap.forEach(listDoc => {
+            options += `<option value="${listDoc.id}" ${car.listId === listDoc.id ? 'selected' : ''}>${listDoc.data().name}</option>`;
           });
-        };
-        // Suppression voiture
-        div.querySelector('.delete-car-btn').onclick = (e) => {
-          e.stopPropagation();
-          if (confirm('Supprimer cette voiture ?')) {
-            db.collection('cars').doc(doc.id).delete();
-          }
-        };
+          const selectHtml = `<select id="move-list-select">${options}</select>`;
+          const modal = document.createElement('div');
+          modal.style = 'position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;z-index:2000;';
+          modal.innerHTML = `<div style='background:#fff;padding:24px;border-radius:12px;box-shadow:0 4px 24px #0002;'>Changer de liste :<br>${selectHtml}<br><button id='move-list-btn' style='margin-top:12px;background:#007aff;color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;'>Valider</button></div>`;
+          document.body.appendChild(modal);
+          modal.querySelector('#move-list-btn').onclick = () => {
+            const newListId = modal.querySelector('#move-list-select').value;
+            db.collection('cars').doc(doc.id).update({ listId: newListId });
+            modal.remove();
+          };
+          modal.onclick = (evt) => { if (evt.target === modal) modal.remove(); };
+        });
+      };
+      // Suppression voiture
+      div.querySelector('.delete-car-btn').onclick = (e) => {
+        e.stopPropagation();
+        if (confirm('Supprimer cette voiture ?')) {
+          db.collection('cars').doc(doc.id).delete();
+        }
+      };
       container.appendChild(div);
     });
   });
@@ -133,38 +133,30 @@ function openCarPopup(carId, car) {
   let photos = Array.isArray(car.photos) ? car.photos : (car.photoURL ? [car.photoURL] : []);
   let miniature = car.miniature || (photos[0] || '');
   let currentPhoto = photos.indexOf(miniature) !== -1 ? photos.indexOf(miniature) : 0;
-function renderPhotos() {
-  let html = '';
-  if (photos.length > 0) {
-    html += `<div style="position:relative; display:flex;align-items:center;justify-content:center;margin-bottom:10px;gap:8px;">
-        <button type="button" id="prev-photo" style="font-size:1.5em;background:none;border:none;cursor:pointer;">◀️</button>
-        
-        <div style="position:relative; display:inline-block;">
-          <img src="${photos[currentPhoto]}" style="width:180px;max-width:90vw;height:120px;object-fit:cover;border-radius:10px;box-shadow:0 2px 8px #0002;">
-          <button type="button" id="zoom-photo" style="position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.5); color:white; border:none; border-radius:5px; cursor:pointer; padding:2px 5px; font-size:12px;">🔍</button>
+  function renderPhotos() {
+    let html = '';
+    if (photos.length > 0) {
+      html += `<div class="photo-carousel">
+        <button type="button" id="prev-photo" class="photo-nav-btn" aria-label="Photo précédente">◀</button>
+        <div class="photo-stage">
+          <img class="photo-stage-image" src="${photos[currentPhoto]}" alt="Photo de voiture">
+          <button type="button" id="zoom-photo" class="photo-zoom-btn" aria-label="Voir en grand"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
-
-        <button type="button" id="next-photo" style="font-size:1.5em;background:none;border:none;cursor:pointer;">▶️</button>
+        <button type="button" id="next-photo" class="photo-nav-btn" aria-label="Photo suivante">▶</button>
       </div>`;
-    html += `<div style="text-align:center;margin-bottom:8px;">
-        ${photos.map((p,i)=>`<span style='cursor:pointer;font-size:1.2em;${i===currentPhoto?'color:#007aff;':''}' data-idx='${i}'>●</span>`).join(' ')}
-      </div>`;
-    html += `<div style="text-align:center;margin-bottom:8px;">
-        <button type="button" id="set-miniature" style="font-size:0.95em;${miniature===photos[currentPhoto]?'background:#007aff;color:#fff;':'background:#eee;'};border:none;padding:4px 10px;border-radius:8px;cursor:pointer;">Choisir comme miniature</button>
-      </div>`;
-  } else {
-    html = '<div style="text-align:center;color:#888;">Aucune photo</div>';
+      html += `<div class="photo-dots">${photos.map((p, i) => `<span class="photo-dot ${i === currentPhoto ? 'active' : ''}" data-idx="${i}" aria-label="Photo ${i + 1}"></span>`).join(' ')}</div>`;
+      html += `<button type="button" id="set-miniature" class="miniature-btn ${miniature === photos[currentPhoto] ? 'is-active' : ''}">${miniature === photos[currentPhoto] ? 'Miniature sélectionnée' : 'Choisir comme miniature'}</button>`;
+    } else {
+      html = '<div style="text-align:center;color:#888;">Aucune photo</div>';
+    }
+    return html;
   }
-  return html;
-}
-modal.innerHTML = `
-  <div class="modal-content" style="position:relative;">
-    <button id="close-modal" style="position: absolute; top: 15px; right: 15px; font-size: 2.2em; background: none; border: none; cursor: pointer; line-height: 1; z-index: 10; margin: 0; padding: 0; width: auto; height: auto; display: block;">✖️</button>
-    <h3 style="margin-top:0;">Modifier la voiture</h3>
-    
+  modal.innerHTML = `
+  <div class="modal-content">
+    <button id="close-modal" class="modal-close" aria-label="Fermer">✕</button>
+    <h3 class="modal-title">Modifier la voiture</h3>
     <div id="photos-carousel">${renderPhotos()}</div>
-    
-    <form id="edit-car-form">
+    <form id="edit-car-form" class="modal-form">
       <label>Modèle</label>
       <input type="text" id="edit-model" value="${car.model || ''}" required>
       <label>Description</label>
@@ -173,7 +165,7 @@ modal.innerHTML = `
       <input type="file" id="edit-photo" accept="image/*" multiple>
       <button type="submit">Enregistrer</button>
     </form>
-    <div id="edit-car-msg"></div>
+    <div id="edit-car-msg" class="modal-message"></div>
   </div>
 `;
   Object.assign(modal.style, {
@@ -181,7 +173,7 @@ modal.innerHTML = `
   });
   let content = modal.querySelector('.modal-content');
   Object.assign(content.style, {
-    padding: '24px', borderRadius: '16px', maxWidth: '350px', width: '90vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', position:'relative'
+    padding: '24px', borderRadius: '16px', maxWidth: '350px', width: '90vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', position: 'relative'
   });
   document.body.appendChild(modal);
   modal.querySelector('#close-modal').onclick = () => modal.remove();
@@ -190,11 +182,11 @@ modal.innerHTML = `
   // Navigation carrousel et choix miniature
   modal.addEventListener('click', e => {
     if (e.target.id === 'prev-photo') {
-      currentPhoto = (currentPhoto-1+photos.length)%photos.length;
+      currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
       modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
     }
     if (e.target.id === 'next-photo') {
-      currentPhoto = (currentPhoto+1)%photos.length;
+      currentPhoto = (currentPhoto + 1) % photos.length;
       modal.querySelector('#photos-carousel').innerHTML = renderPhotos();
     }
     if (e.target.id === 'set-miniature') {
@@ -208,37 +200,33 @@ modal.innerHTML = `
     }
 
 
-if (e.target.id === 'zoom-photo') {
-    const fullScreenModal = document.createElement('div');
-    fullScreenModal.style = 'position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.95); z-index:9999; display:flex; align-items:center; justify-content:center; cursor:zoom-in;';
-    
-    fullScreenModal.innerHTML = `
-        <button id="close-zoom" style="position:absolute; top:20px; right:20px; color:white; background:none; border:none; font-size:2em; cursor:pointer; z-index:100;">✖️</button>
-        <img id="zoom-img" src="${photos[currentPhoto]}" style="max-width:100vw; max-height:100vh; transition: transform 0.3s ease; object-fit:contain;">
+    if (e.target.id === 'zoom-photo' || e.target.closest('#zoom-photo')) {
+      const fullScreenModal = document.createElement('div');
+      fullScreenModal.className = 'photo-zoom-modal';
+
+      fullScreenModal.innerHTML = `
+        <button id="close-zoom" class="photo-zoom-close" aria-label="Fermer la vue photo">✕</button>
+        <img id="zoom-img" class="photo-zoom-image" src="${photos[currentPhoto]}" alt="Photo zoomée">
     `;
-    
-    document.body.appendChild(fullScreenModal);
 
-    const img = fullScreenModal.querySelector('#zoom-img');
-    let zoomLevel = 1; // 1, 2 ou 3
+      document.body.appendChild(fullScreenModal);
 
-    img.onclick = (e) => {
-        e.stopPropagation(); 
-        // Incrémente le niveau, et revient à 1 si on dépasse 3
+      const img = fullScreenModal.querySelector('#zoom-img');
+      let zoomLevel = 1;
+
+      img.onclick = (e) => {
+        e.stopPropagation();
         zoomLevel = zoomLevel >= 3 ? 1 : zoomLevel + 1;
-        
         img.style.transform = `scale(${zoomLevel})`;
-        
-        // Change le curseur pour indiquer l'action possible
         img.style.cursor = zoomLevel === 3 ? 'zoom-out' : 'zoom-in';
-    };
+      };
 
-    fullScreenModal.querySelector('#close-zoom').onclick = () => fullScreenModal.remove();
-    fullScreenModal.onclick = (evt) => { if (evt.target === fullScreenModal) fullScreenModal.remove(); };
-}
+      fullScreenModal.querySelector('#close-zoom').onclick = () => fullScreenModal.remove();
+      fullScreenModal.onclick = (evt) => { if (evt.target === fullScreenModal) fullScreenModal.remove(); };
+    }
   });
 
-  modal.querySelector('#edit-car-form').onsubmit = async function(e) {
+  modal.querySelector('#edit-car-form').onsubmit = async function (e) {
     e.preventDefault();
     const msg = modal.querySelector('#edit-car-msg');
     msg.innerText = 'Enregistrement...';
@@ -250,7 +238,7 @@ if (e.target.id === 'zoom-photo') {
     const files = modal.querySelector('#edit-photo').files;
     if (files && files.length > 0) {
       try {
-        for (let i=0; i<files.length; i++) {
+        for (let i = 0; i < files.length; i++) {
           const ref = storage.ref(`spots/${auth.currentUser.uid}/${Date.now()}_${files[i].name}`); // Utilise storage et auth importés
           await ref.put(files[i]);
           const url = await ref.getDownloadURL();
