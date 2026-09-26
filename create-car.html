@@ -50,6 +50,13 @@
       <select id="c-list" required>
         <option value="">Chargement...</option>
       </select>
+      <select id="c-rarity" required>
+        <option value="1">Très commun</option>
+        <option value="2">Commun</option>
+        <option value="3">Peu commun</option>
+        <option value="4">Rare</option>
+        <option value="5">Légendaire</option>
+      </select>
       <button type="submit" id="btn-up">Publier</button>
       <div id="car-loader" style="display:none;text-align:center;margin-top:10px;">
         <div class="loader"></div>
@@ -157,6 +164,7 @@
             model: document.getElementById('c-model').value,
             desc: document.getElementById('c-desc').value,
             listId: document.getElementById('c-list').value,
+            rarity: parseInt(document.getElementById('c-rarity').value, 10),
             photoURL: url,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });

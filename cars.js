@@ -46,7 +46,10 @@ window.renderCarsPageImpl = function renderCarsPage() {
       div.innerHTML = `
         <div class="car-inline-content">
           <img src="${car.photoURL || car.miniature || (car.photos && car.photos[0]) || ''}" class="car-inline-photo">
-          <span class="car-inline-model">${car.model || ''}</span>
+          <div style="display:flex;flex-direction:column;">
+            <span class="car-inline-model">${car.model || ''}</span>
+            <span class="car-inline-rarity" data-rarity="${car.rarity || 1}"></span>
+          </div>
           <button class="move-car-btn" data-id="${doc.id}" style="margin-left:8px;background:#007aff;color:#fff;border:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:1em;cursor:pointer;box-shadow:0 2px 8px #0001;transition:background 0.2s;">⇄</button>
           <button class="delete-car-btn" data-id="${doc.id}" style="margin-left:8px;background:#ff4444;color:#fff;border:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:1em;cursor:pointer;box-shadow:0 2px 8px #0001;transition:background 0.2s;">🗑️</button>
         </div>
@@ -59,6 +62,14 @@ window.renderCarsPageImpl = function renderCarsPage() {
           db.collection('cars').doc(doc.id).delete();
         }
       };
+
+      // Render rarity label text
+      const rarityEl = div.querySelector('.car-inline-rarity');
+      if (rarityEl) {
+        const rarityMap = { 1: 'Très commun', 2: 'Commun', 3: 'Peu commun', 4: 'Rare', 5: 'Légendaire' };
+        const r = (car.rarity && Number(car.rarity)) || 1;
+        rarityEl.textContent = rarityMap[r] || 'Très commun';
+      }
 
       // Déplacement voiture
       div.querySelector('.move-car-btn').onclick = (e) => {
@@ -120,8 +131,16 @@ window.renderCarsPageImpl = function renderCarsPage() {
                 <input type="text" id="edit-model" value="${car.model || ''}" required>
                 <label>Description</label>
                 <textarea id="edit-desc">${car.desc || ''}</textarea>
-                <label>Ajouter des photos</label>
-                <input type="file" id="edit-photo" accept="image/*" multiple>
+                    <label>Ajouter des photos</label>
+                    <input type="file" id="edit-photo" accept="image/*" multiple>
+                    <label>Rareté</label>
+                    <select id="edit-rarity">
+                      <option value="1" ${(car.rarity || 1) == 1 ? 'selected' : ''}>Très commun</option>
+                      <option value="2" ${(car.rarity || 1) == 2 ? 'selected' : ''}>Commun</option>
+                      <option value="3" ${(car.rarity || 1) == 3 ? 'selected' : ''}>Peu commun</option>
+                      <option value="4" ${(car.rarity || 1) == 4 ? 'selected' : ''}>Rare</option>
+                      <option value="5" ${(car.rarity || 1) == 5 ? 'selected' : ''}>Légendaire</option>
+                    </select>
                 <button type="submit">Enregistrer</button>
             </form>
             <div id="edit-car-msg" class="modal-message"></div>
@@ -179,7 +198,8 @@ window.renderCarsPageImpl = function renderCarsPage() {
       let updates = {
         model: modal.querySelector('#edit-model').value,
         desc: modal.querySelector('#edit-desc').value,
-        miniature
+        miniature,
+        rarity: parseInt(modal.querySelector('#edit-rarity').value, 10)
       };
       const files = modal.querySelector('#edit-photo').files;
       if (files && files.length > 0) {

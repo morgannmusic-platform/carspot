@@ -1,13 +1,13 @@
 :root {
   --primary: #007aff;
-  --bg: #f2f2f7;
-  --card-bg: rgba(255, 255, 255, 0.32);
+  --bg: #ffffff;
+  --card-bg: rgba(179, 179, 179, 0.315);
   --text: #1c1c1e;
   --gray: #444444;
   --error: #ff3b30;
   --radius: 36px;
   --safe-margin: 16px;
-  --shadow-soft: 0 18px 40px rgba(15, 25, 42, 0.12);
+  --shadow-soft: 0 18px 40px rgba(15, 25, 42, 0.118);
 }
 
 * {
@@ -58,12 +58,13 @@ p {
 .list-item,
 .car-card,
 .auth-container,
+.car-inline-container,
 .card,
 .panel {
-  background: var(--card-bg);
+  background: rgba(101, 101, 101, 0.11);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(128, 128, 128, 0.12);
+  border: 1px solid rgba(128, 128, 128, 0.292);
   box-shadow: var(--shadow-soft);
 }
 
@@ -157,14 +158,13 @@ button:active {
   padding: 16px 18px;
   border-radius: var(--radius);
   margin-bottom: 12px;
-  border-left: 4px solid var(--primary);
 }
 
 .detail-img {
   width: 100%;
   border-radius: 18px;
   margin-bottom: 16px;
-  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.123);
 }
 
 .navbar {
@@ -271,12 +271,8 @@ button:active {
 
 /* --- Affichage voiture en ligne dans une liste ET page voitures --- */
 .car-inline-container {
-  background: var(--card-bg);
-  backdrop-filter: blur(11px);
-  -webkit-backdrop-filter: blur(11px);
-  border-radius: 14px;
+  border-radius: var(--radius);
   margin-bottom: 14px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   padding: 8px 14px;
   cursor: pointer;
   transition: box-shadow 0.2s;
@@ -298,12 +294,55 @@ button:active {
   border-radius: 8px;
   margin-right: 16px;
   background: #eee;
+  border-radius: var(--radius);
+
 }
 
 .car-inline-model {
   font-size: 1.1em;
   font-weight: 500;
   color: var(--text);
+}
+
+/* Rarity badge */
+.car-inline-rarity {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 999px;
+  margin-top: 6px;
+  width: fit-content;
+}
+
+.car-inline-rarity[data-rarity="1"] {
+  background: #9ca3af;
+}
+
+.car-inline-rarity[data-rarity="2"] {
+  background: #60a5fa;
+}
+
+.car-inline-rarity[data-rarity="3"] {
+  background: #34d399;
+}
+
+.car-inline-rarity[data-rarity="4"] {
+  background: #f59e0b;
+}
+
+.car-inline-rarity[data-rarity="5"] {
+  background: #ef4444;
+}
+
+/* Adjust form/select visual for app-like UI */
+select#c-rarity,
+select#car-rarity {
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #fff;
 }
 
 /* Sur la page voitures.html, on veut une voiture par ligne */

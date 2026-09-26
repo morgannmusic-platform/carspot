@@ -1,8 +1,8 @@
 const DEFAULT_PREFERENCES = {
   themeColor: '#007aff',
-  backgroundColor: '#f2f2f7',
-  gradientStart: '#007aff',
-  gradientEnd: '#5ac8fa',
+  backgroundColor: '#ffffff',
+  gradientStart: '',
+  gradientEnd: '',
   animateGradient: false,
   backgroundImage: '',
   textColor: '#1c1c1e',

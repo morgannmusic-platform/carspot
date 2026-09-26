@@ -10,12 +10,19 @@ export function renderAddCarPage() {
       <input type="text" id="car-desc" placeholder="Description" required />
       <input type="text" id="car-model" placeholder="Modèle" required />
       <select id="car-list" required></select>
+      <select id="car-rarity" required>
+        <option value="1">Très commun</option>
+        <option value="2">Commun</option>
+        <option value="3">Peu commun</option>
+        <option value="4">Rare</option>
+        <option value="5">Légendaire</option>
+      </select>
       <button type="submit">Enregistrer</button>
       <div id="add-car-message"></div>
     </form>
   `;
   // Charger les listes de l'utilisateur
-  auth.onAuthStateChanged(function(user) { // Utilise auth importé
+  auth.onAuthStateChanged(function (user) { // Utilise auth importé
     if (!user) return;
     db.collection('lists').where('uid', '==', user.uid).get().then(snapshot => {
       const select = document.getElementById('car-list');
@@ -32,7 +39,7 @@ export function renderAddCarPage() {
     });
   });
 
-  document.getElementById('add-car-form').onsubmit = function(e) {
+  document.getElementById('add-car-form').onsubmit = function (e) {
     e.preventDefault();
     const btn = e.target.querySelector('button');
     btn.disabled = true; btn.innerText = 'Envoi...';
@@ -41,7 +48,8 @@ export function renderAddCarPage() {
     const desc = document.getElementById('car-desc').value;
     const model = document.getElementById('car-model').value;
     const listId = document.getElementById('car-list').value;
-    auth.onAuthStateChanged(function(user) { // Utilise auth importé
+    const rarity = parseInt(document.getElementById('car-rarity').value, 10);
+    auth.onAuthStateChanged(function (user) { // Utilise auth importé
       if (!user) return;
       const storageRef = storage.ref('cars/' + user.uid + '/' + Date.now() + '_' + file.name);
       storageRef.put(file).then(snapshot => {
@@ -53,6 +61,7 @@ export function renderAddCarPage() {
           desc,
           model,
           listId,
+          rarity,
           photoURL,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
