@@ -173,9 +173,19 @@ window.renderCarsPageImpl = function renderCarsPage() {
       if (e.target.id === 'zoom-photo' || e.target.closest('#zoom-photo')) {
         const fullScreenModal = document.createElement('div');
         fullScreenModal.className = 'photo-zoom-modal';
+
+        const updateZoomImage = () => {
+          const img = fullScreenModal.querySelector('#zoom-img');
+          img.src = photos[currentPhoto];
+          img.style.transform = 'scale(1)';
+          img.style.cursor = 'zoom-in';
+        };
+
         fullScreenModal.innerHTML = `
                 <button id="close-zoom" class="photo-zoom-close" aria-label="Fermer la vue photo">✕</button>
+                <button id="prev-zoom-photo" class="photo-zoom-nav-btn photo-zoom-prev" aria-label="Photo précédente">❮</button>
                 <img id="zoom-img" class="photo-zoom-image" src="${photos[currentPhoto]}" alt="Photo zoomée">
+                <button id="next-zoom-photo" class="photo-zoom-nav-btn photo-zoom-next" aria-label="Photo suivante">❯</button>
             `;
         document.body.appendChild(fullScreenModal);
         const img = fullScreenModal.querySelector('#zoom-img');
@@ -186,8 +196,40 @@ window.renderCarsPageImpl = function renderCarsPage() {
           img.style.transform = `scale(${zoomLevel})`;
           img.style.cursor = zoomLevel === 3 ? 'zoom-out' : 'zoom-in';
         };
+
+        fullScreenModal.querySelector('#prev-zoom-photo').onclick = (e) => {
+          e.stopPropagation();
+          currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
+          updateZoomImage();
+        };
+
+        fullScreenModal.querySelector('#next-zoom-photo').onclick = (e) => {
+          e.stopPropagation();
+          currentPhoto = (currentPhoto + 1) % photos.length;
+          updateZoomImage();
+        };
+
         fullScreenModal.querySelector('#close-zoom').onclick = () => fullScreenModal.remove();
         fullScreenModal.onclick = (evt) => { if (evt.target === fullScreenModal) fullScreenModal.remove(); };
+
+        document.addEventListener('keydown', handleZoomKeydown);
+
+        function handleZoomKeydown(event) {
+          if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            currentPhoto = (currentPhoto - 1 + photos.length) % photos.length;
+            updateZoomImage();
+          }
+          if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            currentPhoto = (currentPhoto + 1) % photos.length;
+            updateZoomImage();
+          }
+          if (event.key === 'Escape') {
+            document.removeEventListener('keydown', handleZoomKeydown);
+            fullScreenModal.remove();
+          }
+        }
       }
     });
 
